@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="theme-color" content="#3F51B5">
+
+    <title>ROS Data Waster</title>
+    <meta name="description" content="The most straightforward way to waste all of your data.">
+
+    <link rel="shortcut icon" href="favicon.ico">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-components-web/3.1.1/material-components-web.min.css" integrity="sha256-aWDAE2fxKBWHeSbaz4C2cjqvO4+oXF0ClVemgDpr9eE=" crossorigin="anonymous" />
+
+    <style>
+        body {
+            --mdc-theme-primary: #3f51b5;
+            --mdc-theme-secondary: #f44336;
+            background-color: #fafafa;
+        }
+        
+        body .ribbon {
+            top: 0;
+            z-index: -1;
+            background-color: var(--mdc-theme-primary, #6200ee);
+            width: 100%;
+            height: 10rem;
+            position: absolute;
+        }
+        
+        body .main-content {
+            background-color: white;
+            border-radius: 4px;
+            margin: 1.5rem;
+            padding: 2rem;
+            min-height: calc(100vh - 7rem);
+        }
+        
+        body .main-content .app__dialog .mdc-dialog__surface {
+            width: 100%;
+            max-width: calc(100vw - 20rem);
+        }
+        
+        body .main-content .mdc-divider {
+            border-color: rgba(0, 0, 0, 0.117);
+        }
+        
+        body .main-content .mdc-list-divider {
+            border-width: 2px;
+        }
+        
+        body .main-content .app__search .app__progress {
+            position: absolute;
+            border-bottom-left-radius: 4px;
+            border-bottom-right-radius: 4px;
+            bottom: 1px;
+            right: 1px;
+            left: 1px;
+            width: calc(100% - 2px);
+        }
+        
+        body .main-content .app__search.mdc-text-field--focused .app__progress {
+            bottom: 2px;
+            right: 2px;
+            left: 2px;
+            width: calc(100% - 4px);
+        }
+        
+        body .main-content .app__startsearch {
+            right: 4px;
+            top: 4px;
+        }
+        
+        body .main-content .mdc-list-item--twolined {
+            padding-bottom: 16px;
+        }
+        
+        body .main-content .app__error--no-res {
+            text-align: center;
+            display: none;
+        }
+        
+        body .main-content img {
+            max-width: 100%;
+        }
+        
+        body .main-content .mdc-button.mdc-button--raised {
+            background-color: var(--mdc-theme-secondary, #018786);
+        }
+        
+        body .main-content .theme-toggle {
+            position: absolute;
+            top: 0.5rem;
+            right: 3rem;
+        }
+        
+        body .main-content a {
+            color: var(--mdc-theme-primary, #6200ee);
+        }
+        
+        body .main-content::-moz-selection {
+            background-color: var(--mdc-theme-primary, #6200ee);
+            color: white;
+        }
+        
+        body .main-content::selection {
+            background-color: var(--mdc-theme-primary, #6200ee);
+            color: white;
+        }
+        
+        body .main-content #carbonads {
+            margin-bottom: 1rem;
+            float: right;
+            border-radius: 6px;
+            box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
+            font-family: Roboto, sans-serif;
+            line-height: 28px;
+            padding: 8px;
+            box-sizing: border-box;
+            transition: box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        @media only screen and (max-width: 425px) {
+            body .main-content #carbonads {
+                width: 100%;
+            }
+        }
+        
+        body .main-content #carbonads:hover {
+            box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
+        }
+        
+        body .main-content #carbonads .carbon-wrap .carbon-img > img {
+            margin-right: 9px;
+            float: left;
+        }
+        
+        @media only screen and (max-width: 400px) {
+            body .main-content #carbonads .carbon-wrap .carbon-img > img {
+                width: auto;
+                max-width: 130px;
+                height: 50px;
+            }
+        }
+        
+        body .main-content #carbonads .carbon-wrap .carbon-text {
+            color: #637381;
+            font-weight: 300;
+            display: block;
+            font-size: 12px;
+            line-height: 15.96px;
+            margin-bottom: 0;
+            margin-top: 8px;
+            text-decoration: none;
+        }
+        
+        body .main-content #carbonads .carbon-poweredby {
+            color: #c5cdd0;
+            font-size: 8px;
+            font-weight: 500;
+            line-height: 10px;
+            text-transform: uppercase;
+            text-decoration: none;
+        }
+        
+        body .full-width {
+            width: 100%;
+        }
+        
+        body.setting--dark {
+            background-color: #121212 !important;
+            --mdc-theme-text-primary-on-background: white;
+            --mdc-theme-text-secondary-on-background: white;
+            --mdc-theme-text-icon-on-background: white;
+        }
+        
+        body.setting--dark::-webkit-scrollbar {
+            background-color: #424242;
+        }
+        
+        body.setting--dark .main-content {
+            color: white;
+            background-color: #212121;
+        }
+        
+        body.setting--dark .mdc-dialog__surface {
+            background-color: #212121;
+        }
+        
+        body.setting--dark .mdc-dialog__surface .mdc-dialog__content,
+        body.setting--dark .mdc-dialog__surface .mdc-dialog__title {
+            color: white;
+        }
+        
+        body.setting--dark .mdc-select__selected-text,
+        body.setting--dark .mdc-text-field__input,
+        body.setting--dark .mdc-floating-label,
+        body.setting--dark #carbonads .carbon-text {
+            color: white !important;
+        }
+        
+        body.setting--dark .mdc-notched-outline__leading,
+        body.setting--dark .mdc-notched-outline__notch,
+        body.setting--dark .mdc-notched-outline__trailing {
+            border-color: white !important;
+        }
+        
+        body.setting--dark a {
+            color: #5c6bc0;
+        }
+        
+        body.setting--dark::-moz-selection {
+            background-color: #c5cae9;
+            color: black;
+        }
+        
+        body.setting--dark::selection {
+            background-color: #c5cae9;
+            color: black;
+        }
+        
+        body.setting--animate-colours {
+            transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        body.setting--animate-colours .main-content,
+        body.setting--animate-colours a,
+        body.setting--animate-colours::-moz-selection {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            transition-property: background-color, color;
+        }
+        
+        body.setting--animate-colours .main-content,
+        body.setting--animate-colours a,
+        body.setting--animate-colours::selection {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            transition-property: background-color, color;
+        }
+        
+        body::-webkit-scrollbar,
+        body .mdc-dialog__content::-webkit-scrollbar {
+            border-radius: 100px;
+            background-color: transparent;
+            width: 8px;
+            height: 8px;
+        }
+        
+        body::-webkit-scrollbar-button,
+        body .mdc-dialog__content::-webkit-scrollbar-button {
+            height: 0;
+            width: 0;
+        }
+        
+        body::-webkit-scrollbar-corner,
+        body .mdc-dialog__content::-webkit-scrollbar-corner {
+            background-color: transparent;
+        }
+        
+        body::-webkit-scrollbar-thumb,
+        body .mdc-dialog__content::-webkit-scrollbar-thumb {
+            border-radius: 100px;
+            background-color: rgba(0, 0, 0, 0.2);
+            min-height: 28px;
+        }
+        
+        body::-webkit-scrollbar-thumb:hover,
+        body .mdc-dialog__content::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+        
+        body::-webkit-scrollbar-thumb:active,
+        body .mdc-dialog__content::-webkit-scrollbar-thumb:active {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        
+        body::-webkit-scrollbar-track,
+        body .mdc-dialog__content::-webkit-scrollbar-track {
+            background-clip: padding-box;
+            border-width: 0 0 0 4px;
+        }
+    </style>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha256-l85OmPOjvil/SOvVt3HnSSjzF1TUMyT9eV0c2BzEGzU=" crossorigin="anonymous" />
+
+</head>
+
+<body>
+    <!-- https://richienb.mit-license.org/ -->
+    <div class="ribbon mdc-elevation--z4"></div>
+    <main class="main-content mdc-typography mdc-elevation--z8">
+        <script async src="https://cdn.carbonads.com/carbon.js?serve=CK7I6K3E&amp;placement=wwwrichie-bendallml" id="_carbonads_js"></script>
+        <button class="theme-toggle mdc-fab mdc-fab--mini" aria-label="Toggle theme" data-mdc-auto-init="MDCRipple">
+            <svg class="theme-toggle__svg mdc-fab__icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                <path fill="none" d="M0 0h24v24H0V0z" />
+                <path d="M11 7l-3.2 9h1.9l.7-2h3.2l.7 2h1.9L13 7h-2zm-.15 5.65L12 9l1.15 3.65h-2.3zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69zm-2 5.79V18h-3.52L12 20.48 9.52 18H6v-3.52L3.52 12 6 9.52V6h3.52L12 3.52 14.48 6H18v3.52L20.48 12 18 14.48z" />
+            </svg>
+        </button>
+        <h1 class="mdc-typography--headline2">Integrated Taxonomic Information System</h1>
+        <p class="mdc-typography--body1">Formatted data from <a href="https://www.itis.gov/" target="_blank" rel="noopener">itis.gov</a>.</p>
+        <form class="app__searchform" action="#">
+            <label class="app__search mdc-text-field mdc-text-field--outlined mdc-text-field--with-trailing-icon full-width" data-mdc-auto-init="MDCTextField">
+                <input type="text" class="mdc-text-field__input" required>
+                <div class="mdc-notched-outline">
+                    <div class="mdc-notched-outline__leading"></div>
+                    <div class="mdc-notched-outline__notch">
+                        <span class="mdc-floating-label">Search</span>
+                    </div>
+                    <div class="mdc-notched-outline__trailing"></div>
+                </div>
+                <!-- TODO: Add search settings -->
+                <button class="app__startsearch mdc-icon-button" title="Search" aria-hidden="true" aria-pressed="true" type="submit" data-mdc-auto-init="MDCRipple">
+
+                    <svg class="mdc-icon-button__icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                        <path fill="none" d="M0 0h24v24H0V0z" />
+                        <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+                    </svg>
+                </button>
+                <div role="progressbar" class="app__progress mdc-linear-progress mdc-linear-progress--indeterminate mdc-linear-progress--closed" data-mdc-auto-init="MDCLinearProgress">
+                    <div class="mdc-linear-progress__buffering-dots"></div>
+                    <div class="mdc-linear-progress__buffer"></div>
+                    <div class="mdc-linear-progress__bar mdc-linear-progress__primary-bar">
+                        <span class="mdc-linear-progress__bar-inner"></span>
+                    </div>
+                    <div class="mdc-linear-progress__bar mdc-linear-progress__secondary-bar">
+                        <span class="mdc-linear-progress__bar-inner"></span>
+                    </div>
+                </div>
+            </label>
+        </form>
+
+        <ul class="app__res mdc-list">
+        </ul>
+        <p class="app__no-res app__error--no-res mdc-typography--caption">No results found</p>
+        <div class="app__dialog mdc-dialog" role="alertdialog" aria-modal="true" aria-labelledby="my-dialog-title" aria-describedby="my-dialog-content" data-mdc-auto-init="MDCDialog">
+            <div class="mdc-dialog__container">
+                <div class="mdc-dialog__surface">
+
+                    <h2 class="mdc-dialog__title" id="my-dialog-title"></h2>
+                    <div class="mdc-dialog__content" id="my-dialog-content">
+                        <div class="mdc-list-group">
+                            <h3 class="mdc-list-group__subheader">Taxonomy and Nomenclature</h3>
+                            <hr class="mdc-list-divider">
+                            <ul class="mdc-list mdc-list--two-line">
+                                <li class="mdc-list-item" data-mdc-auto-init="MDCRipple">
+                                    <span class="mdc-list-item__text">
+      <span class="mdc-list-item__primary-text">Kingdom</span>
+                                    <span class="mdc-list-item__secondary-text app__kingdom"></span>
+                                    </span>
+                                </li>
+                                <li class="mdc-list-item" data-mdc-auto-init="MDCRipple">
+                                    <span class="mdc-list-item__text">
+      <span class="mdc-list-item__primary-text">Taxonomic Rank</span>
+                                    <span class="mdc-list-item__secondary-text app__taxrank"></span>
+                                    </span>
+                                </li>
+                                <li class="mdc-list-item app__commonname" data-mdc-auto-init="MDCRipple">
+                                    <span class="mdc-list-item__text">
+      <span class="mdc-list-item__primary-text app__commonname-title">Common name</span>
+                                    <span class="mdc-list-item__secondary-text app__commonname-text"></span>
+                                    </span>
+                                </li>
+                                <li class="mdc-list-item app__synonym" data-mdc-auto-init="MDCRipple">
+                                    <span class="mdc-list-item__text">
+      <span class="mdc-list-item__primary-text app__synonym-title">Synonym</span>
+                                    <span class="mdc-list-item__secondary-text app__synonym-text"></span>
+                                    </span>
+                                </li>
+                            </ul>
+                            <h3 class="mdc-list-group__subheader">Geographic Division</h3>
+                            <hr class="mdc-list-divider">
+                            <p class="app__geo-no-res app__error--no-res mdc-typography--caption">No information found</p>
+                            <ul class="mdc-list app__geo">
+                            </ul>
+                            <h3 class="mdc-list-group__subheader">Jurisdiction/Origin</h3>
+                            <hr class="mdc-list-divider">
+                            <ul class="mdc-list app__origin">
+                            </ul>
+                            <h3 class="mdc-list-group__subheader">Taxonomic Hierarchy</h3>
+                            <hr class="mdc-list-divider">
+                            <p class="app__hierarchy"></p>
+                            <h3 class="mdc-list-group__subheader">Experts</h3>
+                            <hr class="mdc-list-divider">
+                            <ul class="mdc-list mdc-list--two-line app__experts">
+                            </ul>
+                            <h3 class="mdc-list-group__subheader">Other Sources</h3>
+                            <hr class="mdc-list-divider">
+                            <ul class="mdc-list app__sources">
+                            </ul>
+                            <h3 class="mdc-list-group__subheader">Publications</h3>
+                            <hr class="mdc-list-divider">
+                            <ul class="mdc-list app__publications">
+                            </ul>
+                            <h3 class="mdc-list-group__subheader">Comments</h3>
+                            <hr class="mdc-list-divider">
+                            <ul class="mdc-list app__comments">
+                            </ul>
+                        </div>
+                    </div>
+                    <footer class="mdc-dialog__actions">
+                        <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="ok">
+                            <span class="mdc-button__label">Close</span>
+                        </button>
+                    </footer>
+                </div>
+            </div>
+            <div class="mdc-dialog__scrim"></div>
+        </div>
+    </main>
+    <!--[if lt IE 9]> <script async src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js" integrity="sha256-1eSvllkLdrfxD6G8RGF9h+mQuD93Af5+GdPBMNc7uMQ=" crossorigin="anonymous"></script> <![endif]-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/material-components-web/3.1.1/material-components-web.min.js" integrity="sha256-cnhaiphioF4jcsl4vAR6gQt9pwpG3odW77SA4M+diIA=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bluebird/3.5.5/bluebird.min.js" integrity="sha256-x2waQ9LpHJmQWdOfXbxwSjwVFFqgBYt4HH4Dl3rpZ1w=" crossorigin="anonymous"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=String.prototype.repeat%2CArray.prototype.includes"></script>
+
+    <script>
+        // https://richienb.mit-license.org/
+        mdc.autoInit();
+        $(".mdc-icon-button[data-mdc-auto-init=\"MDCRipple\"]").each(function(_, _a) {
+            var MDCRipple = _a.MDCRipple;
+            return MDCRipple.unbounded = true;
+        });
+        Array.prototype.cycle = function(str) {
+            var i = this.indexOf(str);
+            if (i === -1)
+                return undefined;
+            return this[(i + 1) % this.length];
+        };
+        var handleTheme = function() {
+            switch (localStorage.getItem("theme")) {
+                case "light":
+                    $(".theme-toggle__svg").html("<path fill=\"none\" d=\"M0 0h24v24H0V0z\"/><path d=\"M20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69zm-2 5.79V18h-3.52L12 20.48 9.52 18H6v-3.52L3.52 12 6 9.52V6h3.52L12 3.52 14.48 6H18v3.52L20.48 12 18 14.48zM12 6c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z\"/><circle cx=\"12\" cy=\"12\" r=\"2.5\"/>");
+                    $("body").removeClass("setting--dark");
+                    break;
+                case "dark":
+                    $(".theme-toggle__svg").html("<path fill=\"none\" d=\"M0 0h24v24H0V0z\"/><path d=\"M20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69zm-2 5.79V18h-3.52L12 20.48 9.52 18H6v-3.52L3.52 12 6 9.52V6h3.52L12 3.52 14.48 6H18v3.52L20.48 12 18 14.48zM12 6c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z\"/>");
+                    $("body").addClass("setting--dark");
+                    break;
+                default:
+                    $(".theme-toggle__svg").html("<path fill=\"none\" d=\"M0 0h24v24H0V0z\"/><path d=\"M11 7l-3.2 9h1.9l.7-2h3.2l.7 2h1.9L13 7h-2zm-.15 5.65L12 9l1.15 3.65h-2.3zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69zm-2 5.79V18h-3.52L12 20.48 9.52 18H6v-3.52L3.52 12 6 9.52V6h3.52L12 3.52 14.48 6H18v3.52L20.48 12 18 14.48z\"/>");
+                    var hours = new Date().getHours();
+                    $("body").toggleClass("setting--dark", hours <= 6 ||
+                        hours >= 20 ||
+                        window.matchMedia("(prefers-color-scheme: dark)").matches ||
+                        window.matchMedia("(-ms-high-contrast: white-on-black)").matches);
+            }
+
+        };
+        if (["auto", "light", "dark"].indexOf(localStorage.getItem("theme")) === -1)
+            localStorage.setItem("theme", "auto");
+        handleTheme();
+        $("body").addClass("setting--animate-colours");
+        $(".theme-toggle").click(function() {
+            localStorage.setItem("theme", ["auto", "light", "dark"].cycle(localStorage.getItem("theme")));
+            handleTheme();
+        });
+        $(".app__search input").keypress(function(e) {
+            var keycode = e.keyCode || e.which;
+            if (keycode === "13") {
+                e.preventDefault();
+                $(".app__searchform").submit();
+            }
+        });
+        var itis = function(endpoint, data) {
+            return $.ajax({
+                url: "https://www.itis.gov/ITISWebService/jsonservice/" + endpoint + "?jsonp=?",
+                data: data,
+                dataType: "json",
+                cache: true
+            }).
+            promise();
+        };
+        $(".app__searchform").submit(function(e) {
+            e.preventDefault();
+            $(".app__progress").get(0).MDCLinearProgress.open();
+            itis("searchForAnyMatch", {
+                srchKey: $(".app__search").get(0).MDCTextField.value
+            }).
+
+            then(function(_a) {
+                var anyMatchList = _a.anyMatchList;
+                $(".app__res").empty();
+                $(".app__no-res").toggle(anyMatchList.length === 0);
+                $.each(anyMatchList.slice(0, 100), function(_, _a) {
+                    var sciName = _a.sciName,
+                        commonNameList = _a.commonNameList,
+                        tsn = _a.tsn;
+                    if (commonNameList.commonNames.length !== 0 && commonNameList.commonNames[0].commonName)
+                        $(".app__res").append("<li class=\"mdc-list-item mdc-list-item--twolined\" data-tsn=\"" + tsn + "\" data-mdc-auto-init=\"MDCRipple\">\n    <span class=\"mdc-list-item__text\">\n      <span class=\"mdc-list-item__primary-text\">" + sciName + "</span>\n      <span class=\"mdc-list-item__secondary-text\">" + commonNameList.commonNames[0].commonName + "</span>\n    </span>\n  </li>");
+                    else
+
+                        $(".app__res").append("\n<li class=\"mdc-list-item\" data-tsn=\"" + tsn + "\" data-mdc-auto-init=\"MDCRipple\">\n    <span class=\"mdc-list-item__text\">" + sciName + "</span>\n  </li>");
+                });
+                mdc.autoInit($(".app__res").get(0));
+                $(".app__progress").get(0).MDCLinearProgress.close();
+            })["catch"](function() {
+                $(".app__res").empty();
+                $(".app__no-res").show();
+                $(".app__progress").get(0).MDCLinearProgress.close();
+            });
+        });
+        $(".app__res").click(function(e) {
+            var el = $(e.target);
+            if (el.parents(".app__res").length) {
+                var tsn_1 = el.attr("data-tsn");
+                var title = el.hasClass("mdc-list-item--twolined") ? el.find(".mdc-list-item__secondary-text").text() + " (" + el.find(".mdc-list-item__primary-text").text() + ")" : el.find(".mdc-list-item__text").text();
+                $(".app__dialog .mdc-dialog__title").text(title);
+                $(".app__hierarchy, .app__geo, .app__origin, .app__experts, .app__sources").empty();
+                Promise.all([itis("getFullRecordFromTSN", {
+                        tsn: tsn_1
+                    }),
+                    itis("getFullHierarchyFromTSN", {
+                        tsn: tsn_1
+                    })
+                ]).
+
+                then(function(res) {
+                    var _a = res[0],
+                        taxRank = _a.taxRank,
+                        commonNameList = _a.commonNameList,
+                        synonymList = _a.synonymList,
+                        geographicDivisionList = _a.geographicDivisionList,
+                        jurisdictionalOriginList = _a.jurisdictionalOriginList,
+                        expertList = _a.expertList,
+                        otherSourceList = _a.otherSourceList,
+                        publicationList = _a.publicationList,
+                        commentList = _a.commentList;
+                    var hierarchyList = res[1].hierarchyList;
+                    $(".app__dialog .app__kingdom").text($.trim(taxRank.kingdomName));
+                    $(".app__dialog .app__taxrank").text($.trim(taxRank.rankName));
+                    var commonNames = commonNameList.commonNames;
+                    if (commonNames[0] === null)
+                        $(".app__commonname").hide();
+                    else {
+                        $(".app__commonname").show();
+                        $(".app__commonname-title").text(commonNames.length === 1 ? "Common name" : "Common names");
+                        $(".app__commonname-text").text($.map(commonNames, function(_a) {
+                            var commonName = _a.commonName;
+                            return commonName;
+                        }).join(", "));
+                    }
+                    var synonyms = synonymList.synonyms;
+                    if (synonyms[0] === null)
+                        $(".app__synonym").hide();
+                    else {
+                        $(".app__synonym").show();
+                        $(".app__synonym-title").text(synonyms.length === 1 ? "Synonym" : "Synonyms");
+                        $(".app__synonym-text").text($.map(synonyms, function(_a) {
+                            var sciName = _a.sciName;
+                            return sciName;
+                        }).join(", "));
+                    }
+                    $(".app__hierarchy").html($.map(hierarchyList, function(_a, i) {
+                        var rankName = _a.rankName,
+                            taxonName = _a.taxonName;
+                        return "" + "&nbsp".repeat(i * 4) + rankName + ": " + taxonName;
+                    }).join("<br>"));
+                    var geoDivisions = geographicDivisionList.geoDivisions;
+                    $(".app__geo-no-res").toggle(JSON.stringify(geoDivisions) !== "[null]");
+                    if (JSON.stringify(geoDivisions) !== "[null]")
+                        $.map(geoDivisions, function(_a) {
+                            var geographicValue = _a.geographicValue;
+                            $(".app__geo").append("<li class=\"mdc-list-item\" data-mdc-auto-init=\"MDCRipple\">\n                    <span class=\"mdc-list-item__text\">" + geographicValue + "</span>\n                 </li>");
+                        });
+                    var jurisdictionalOrigins = jurisdictionalOriginList.jurisdictionalOrigins;
+                    $.map(jurisdictionalOrigins, function(_a) {
+                        var jurisdictionValue = _a.jurisdictionValue;
+                        $(".app__origin").append("<li class=\"mdc-list-item\" data-mdc-auto-init=\"MDCRipple\">\n                    <span class=\"mdc-list-item__text\">" + jurisdictionValue + "</span>\n                 </li>");
+                    });
+                    var experts = expertList.experts;
+                    $.map(experts, function(_a) {
+                        var expert = _a.expert,
+                            comment = _a.comment;
+                        return $(".app__experts").append("\n  <li class=\"mdc-list-item\" data-mdc-auto-init=\"MDCRipple\">\n    <span class=\"mdc-list-item__text\">\n      <span class=\"mdc-list-item__primary-text\">" + expert + "</span>\n      <span class=\"mdc-list-item__secondary-text\">" + comment + "</span>\n    </span>\n  </li>");
+                    });
+                    var otherSources = otherSourceList.otherSources;
+                    $.map(otherSources, function(_a) {
+                        var acquisitionDate = _a.acquisitionDate,
+                            source = _a.source,
+                            sourceComment = _a.sourceComment,
+                            sourceType = _a.sourceType,
+                            updateDate = _a.updateDate,
+                            version = _a.version;
+                        return $(".app__sources").append(sourceComment ? "<li class=\"mdc-list-item\" data-mdc-auto-init=\"MDCRipple\">\n    <span class=\"mdc-list-item__text\">\n      <span class=\"mdc-list-item__primary-text\">" + source + ", " + sourceType + " (version " + version + ", last updated " + updateDate + ")</span>\n      <span class=\"mdc-list-item__secondary-text\">" + sourceComment + "</span>\n    </span>\n  </li>" : "\n  <li class=\"mdc-list-item\" data-mdc-auto-init=\"MDCRipple\">\n    <span class=\"mdc-list-item__text\">" + source + ", " + sourceType + " (version " + version + ", last updated " + updateDate + ")</span>\n</li>");
+                    });
+                    var publications = publicationList.publications;
+                    $.map(publications, function(_a) {
+                        var title = _a.title,
+                            actualPubDate = _a.actualPubDate,
+                            isbn = _a.isbn,
+                            issn = _a.issn,
+                            pubComment = _a.pubComment,
+                            pubName = _a.pubName;
+                        var bn = "";
+                        if (isbn)
+                            bn += " (ISBN: " + isbn + ")";
+                        if (issn)
+                            bn += " (ISSN: " + issn + ")";
+                        $(".app__publications").append(pubComment ? "<li class=\"mdc-list-item mdc-list-item--twolined\" data-tsn=\"" + tsn_1 + "\" data-mdc-auto-init=\"MDCRipple\">\n    <span class=\"mdc-list-item__text\">\n      <span class=\"mdc-list-item__primary-text\">" + (title || pubName) + ", published " + actualPubDate + bn + "</span>\n      <span class=\"mdc-list-item__secondary-text\">" + pubComment + "</span>\n    </span>\n  </li>" : "\n  <li class=\"mdc-list-item\" data-mdc-auto-init=\"MDCRipple\">\n    <span class=\"mdc-list-item__text\">" + (title || pubName) + ", published " + actualPubDate + bn + "</span>\n</li>");
+                    });
+                    var comments = commentList.comments;
+                    $.map(comments, function(_a) {
+                        var commentDetail = _a.commentDetail;
+                        return $(".app__comments").append("\n<li class=\"mdc-list-item\" data-mdc-auto-init=\"MDCRipple\" title=\"" + commentDetail + "\">\n    <span class=\"mdc-list-item__text\">" + commentDetail + "</span>\n</li>\n");
+                    });
+                    mdc.autoInit($(".app__dialog").get(0));
+                    $(".app__dialog").get(0).MDCDialog.open();
+                });
+            }
+        });
+    </script>
+
+</body>
+
+</html>
